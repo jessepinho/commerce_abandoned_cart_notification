@@ -1,0 +1,43 @@
+<?php
+/*
+ * TODO :
+ * OK - Créer / Exporter la vue "Abandoned Shopping Carts"
+ * OK - Créer un status : User notified
+ * - Créer un Rule Component
+ * - Utiliser le Token Shopping Cart (à tester)
+ * - Intégration à VBO
+ * - Créer la page de configuration pour gérer le template du mail (avec le token)
+ * - Forbid notification for anonymous users (no mail address)
+ */
+
+/*
+ * INFO :
+ * - commerce_checkout.rules_default.inc : commerce_checkout_order_status_update ($rule->label = t('Update the order status on checkout completion');)
+ */
+
+
+/**
+ * Implements hook_commerce_order_status_info().
+ */
+function commerce_abandoned_cart_notification_commerce_order_status_info() {
+  $order_statuses = array();
+
+  $order_statuses['user_notified'] = array(
+    'name' => 'user_notified',
+    'title' => t('User notified'),
+    'state' => 'cart',
+    'weight' => 2,
+  );
+
+  return $order_statuses;
+}
+
+/**
+ * Implements hook_views_api().
+ */
+function commerce_abandoned_cart_notification_views_api() {
+  return array(
+    'api' => 3,
+    'path' => drupal_get_path('module', 'commerce_abandoned_cart_notification') . '/includes/views',
+  );
+}
