@@ -5,9 +5,6 @@ configure = admin/config/abandoned_cart_notification
 dependencies[] = views
 dependencies[] = commerce
 dependencies[] = commerce_vbo_views
-;dependencies[] = rules
+dependencies[] = rules
 
 core = 7.x
-
-; Views includes
-;files[] = includes/views/commerce_abandoned_cart_notification.views_default.inc

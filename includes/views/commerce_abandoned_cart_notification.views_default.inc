@@ -10,7 +10,6 @@
 function commerce_abandoned_cart_notification_views_default_views() {
   $views = array();
 
-  // PASTE THE EXPORT FROM THE VIEW HERE
   $view = new view;
   $view->name = 'abandoned_cart';
   $view->description = 'Display a list of abandoned carts in the store admin.';
@@ -90,7 +89,7 @@ function commerce_abandoned_cart_notification_views_default_views() {
           'override_label' => 0,
           'label' => '',
       ),
-      'rules_notify_the_user_of_his_abandoned_cart' => array(
+      'rules_notify_user_abandoned_cart' => array(
           'selected' => 1,
           'use_queue' => 0,
           'skip_confirmation' => 0,
@@ -273,9 +272,6 @@ function commerce_abandoned_cart_notification_views_default_views() {
   $handler->display->display_options['menu']['title'] = 'Abandoned carts';
   $handler->display->display_options['menu']['weight'] = '5';
   $handler->display->display_options['menu']['context'] = 0;
-
-  // END OF THE EXPORTED VIEW
-
 
   $views[$view->name] = $view;
 
