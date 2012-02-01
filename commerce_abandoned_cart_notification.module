@@ -1,20 +1,4 @@
 <?php
-/*
- * TODO :
- * OK - Créer / Exporter la vue "Abandoned Shopping Carts"
- * OK - Créer un status : User notified
- * - Créer un Rule Component
- * - Utiliser le Token Shopping Cart (à tester)
- * - Intégration à VBO
- * - Créer la page de configuration pour gérer le template du mail (avec le token)
- * - Forbid notification for anonymous users (no mail address)
- */
-
-/*
- * INFO :
- * - commerce_checkout.rules_default.inc : commerce_checkout_order_status_update ($rule->label = t('Update the order status on checkout completion');)
- */
-
 
 /**
  * Implements hook_commerce_order_status_info().
