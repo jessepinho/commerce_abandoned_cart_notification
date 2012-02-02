@@ -25,8 +25,8 @@ function commerce_abandoned_cart_notification_default_rules_configuration() {
           "DO" : [
             { "mail" : {
                 "to" : "[abandoned-cart:mail]",
-                "subject" : "[site:name] - Reminder of your cart",
-                "message" : "Hi,\r\n\r\nYou have a waiting shopping cart that you can find here : [abandoned-cart:customer-url]\r\n\r\nSee you soon online !"
+                "subject" : "[site:name] - Reminder of your shopping cart",
+                "message" : "Dear customer,\r\n\r\nYou can find your shopping cart here : [abandoned-cart:customer-url]\r\n\r\n[abandoned-cart:order-shopping-cart-table]\r\n\r\nSee you soon online !"
               }
             },
             { "commerce_order_update_status" : {
@@ -34,7 +34,7 @@ function commerce_abandoned_cart_notification_default_rules_configuration() {
                 "order_status" : "user_notified"
               }
             },
-            { "drupal_message" : { "message" : "Successfully reminds [abandoned-cart:mail] of his abandoned cart." } }
+            { "drupal_message" : { "message" : "Successfully sent e-mail to [abandoned-cart:mail]." } }
           ],
           "LABEL" : "Send e-mail to the user with the content of his abandoned cart"
         }
@@ -43,12 +43,12 @@ function commerce_abandoned_cart_notification_default_rules_configuration() {
           "IF" : [ { "data_is_empty" : { "data" : [ "abandoned-cart:mail" ] } } ],
           "DO" : [
             { "drupal_message" : {
-                "message" : "No e-mail found for the shopping cart n\u00b0[abandoned-cart:order-id].",
+                "message" : "No e-mail attached to the shopping cart n\u00b0[abandoned-cart:order-id].",
                 "type" : "warning"
               }
             }
           ],
-          "LABEL" : "Display a message if the user has no e-mail address."
+          "LABEL" : "Display a message if no e-mail address is attached to the cart."
         }
       },
       { "RULE" : {
@@ -57,17 +57,17 @@ function commerce_abandoned_cart_notification_default_rules_configuration() {
           ],
           "DO" : [
             { "drupal_message" : {
-                "message" : "A message has already been sent to [abandoned-cart:mail] for his abandoned cart.",
+                "message" : "A notification has already been sent to [abandoned-cart:mail].",
                 "type" : "warning"
               }
             }
           ],
-          "LABEL" : "Display a message if the reminder has already been sent"
+          "LABEL" : "Display a message if the notification has already been sent"
         }
       }
     ]
   }
-}  
+}
 ');
   return $items;
 }
