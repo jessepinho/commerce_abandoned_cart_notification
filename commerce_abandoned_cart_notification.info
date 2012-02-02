@@ -1,5 +1,5 @@
 name = Abandoned Cart Notification
-description = Send email to your customers who have forgotten about their shopping cart
+description = ACN Send email to your customers who have forgotten about their shopping cart
 package = Commerce (notification)
 configure = admin/config/workflow/rules/components/manage/rules_notify_user_abandoned_cart
 dependencies[] = views
