@@ -6,6 +6,7 @@
 function commerce_abandoned_cart_notification_commerce_order_status_info() {
   $order_statuses = array();
 
+  // Create a new status for orders whom already received a notification.
   $order_statuses['user_notified'] = array(
     'name' => 'user_notified',
     'title' => t('User notified'),
@@ -15,6 +16,7 @@ function commerce_abandoned_cart_notification_commerce_order_status_info() {
 
   return $order_statuses;
 }
+
 
 /**
  * Implements hook_views_api().
