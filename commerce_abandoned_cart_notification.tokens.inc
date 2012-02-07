@@ -13,9 +13,9 @@ function commerce_abandoned_cart_notification_token_info() {
 
   //  Define the token for the shopping cart.
   $order = array();
-  $order['order-shopping-cart-table'] = array(
-      'name' => t('Order content', array(), array('context' => 'a drupal commerce order')),
-      'description' => t('The content of the shopping cart as an HTML array.'),
+  $order['abandoned-cart-view'] = array(
+      'name' => t('Abandoned cart content', array(), array('context' => 'a drupal commerce order')),
+      'description' => t('The content of the abandoned shopping cart as an HTML array.'),
   );
 
   return array(
@@ -29,7 +29,6 @@ function commerce_abandoned_cart_notification_token_info() {
  * The token that is created comes from a view that the user can easily modify.
  */
 function commerce_abandoned_cart_notification_tokens($type, $tokens, array $data = array(), array $options = array()) {
-
   $replacements = array();
 
   if ($type == 'commerce-order' && !empty($data['commerce-order'])) {
@@ -38,10 +37,10 @@ function commerce_abandoned_cart_notification_tokens($type, $tokens, array $data
     foreach ($tokens as $name => $original) {
       switch ($name) {
         // Simple key values on the order.
-        case 'order-shopping-cart-table':
+        case 'abandoned-cart-view':
           
-          // Load the view that will fill the token
-          $view_name = 'abandoned_cart';
+          // Load the view that we use to fill the token.
+          $view_name = 'abandoned_cart_token';
           $display_name = 'abandoned_cart_token_block';
           $shopping_cart_view = views_embed_view($view_name, $display_name, $order->order_id);
 
