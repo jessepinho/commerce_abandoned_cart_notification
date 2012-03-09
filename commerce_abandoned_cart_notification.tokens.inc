@@ -15,7 +15,7 @@ function commerce_abandoned_cart_notification_token_info() {
   $order = array();
   $order['abandoned-cart-view'] = array(
       'name' => t('Abandoned cart content', array(), array('context' => 'a drupal commerce order')),
-      'description' => t('The content of the abandoned shopping cart as an HTML array.'),
+      'description' => t('The content of the cart from the abandoned_cart_token view.'),
   );
 
   return array(
