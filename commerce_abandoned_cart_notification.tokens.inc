@@ -2,12 +2,14 @@
 
 /**
  * @file
- * Defines the new token added by the commerce_abandoned_cart_notification module.
+ * Defines the new token added by the commerce_abandoned_cart_notification 
+ * module.
  */
 
 /**
  * Implements hook_token_info().
- * We create a token for the abandoned cart that will be sent by e-mail to the customer.
+ * We create a token for the abandoned cart that will be sent by e-mail 
+ * to the customer.
  */
 function commerce_abandoned_cart_notification_token_info() {
   $type = array(

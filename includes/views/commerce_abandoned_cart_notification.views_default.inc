@@ -573,7 +573,9 @@ function commerce_abandoned_cart_notification_views_default_views() {
 
   $views[$view->name] = $view;
 
-  // Display the content of an abandoned shopping cart. This is used to fill the token : abandoned-cart-view.
+  /* Display the content of an abandoned shopping cart. This is used to fill the
+   *  token : abandoned-cart-view.
+   */
   $view = new view;
   $view->name = 'abandoned_cart_token';
   $view->description = 'Display a list of line items in an abandoned shopping cart.';
