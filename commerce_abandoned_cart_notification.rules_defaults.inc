@@ -6,7 +6,7 @@
  */
 
 /**
- * Implementation of hook_default_rules_configuration().
+ * Implements hook_default_rules_configuration().
  */
 function commerce_abandoned_cart_notification_default_rules_configuration() {
   $items = array();

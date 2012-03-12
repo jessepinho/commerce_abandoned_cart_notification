@@ -1,7 +1,8 @@
 <?php
 
 /**
- * Views displaying the abandoned shopping carts.
+ * @file
+ * commerce_abandoned_cart_notification.views_default.inc
  */
 
 /**
@@ -9,7 +10,7 @@
  */
 function commerce_abandoned_cart_notification_views_default_views() {
   $views = array();
-  
+
   // Display a list of abandoned shopping cart grouped by customer.
   $view = new view;
   $view->name = 'abandoned_cart';
@@ -79,57 +80,57 @@ function commerce_abandoned_cart_notification_views_default_views() {
   $handler->display->display_options['fields']['views_bulk_operations']['hide_alter_empty'] = 1;
   $handler->display->display_options['fields']['views_bulk_operations']['vbo']['entity_load_capacity'] = '10';
   $handler->display->display_options['fields']['views_bulk_operations']['vbo']['operations'] = array(
-      'views_bulk_operations_delete_item' => array(
-          'selected' => 0,
-          'use_queue' => 0,
-          'skip_confirmation' => 0,
-          'override_label' => 0,
-          'label' => '',
+    'views_bulk_operations_delete_item' => array(
+      'selected' => 0,
+      'use_queue' => 0,
+      'skip_confirmation' => 0,
+      'override_label' => 0,
+      'label' => '',
+    ),
+    'system_message_action' => array(
+      'selected' => 0,
+      'use_queue' => 0,
+      'skip_confirmation' => 0,
+      'override_label' => 0,
+      'label' => '',
+    ),
+    'views_bulk_operations_script_action' => array(
+      'selected' => 0,
+      'use_queue' => 0,
+      'skip_confirmation' => 0,
+      'override_label' => 0,
+      'label' => '',
+    ),
+    'rules_notify_user_abandoned_cart' => array(
+      'selected' => 1,
+      'use_queue' => 0,
+      'skip_confirmation' => 0,
+      'override_label' => 0,
+      'label' => '',
+    ),
+    'views_bulk_operations_argument_selector_action' => array(
+      'selected' => 0,
+      'skip_confirmation' => 0,
+      'override_label' => 0,
+      'label' => '',
+      'settings' => array(
+        'url' => '',
       ),
-      'system_message_action' => array(
-          'selected' => 0,
-          'use_queue' => 0,
-          'skip_confirmation' => 0,
-          'override_label' => 0,
-          'label' => '',
-      ),
-      'views_bulk_operations_script_action' => array(
-          'selected' => 0,
-          'use_queue' => 0,
-          'skip_confirmation' => 0,
-          'override_label' => 0,
-          'label' => '',
-      ),
-      'rules_notify_user_abandoned_cart' => array(
-          'selected' => 1,
-          'use_queue' => 0,
-          'skip_confirmation' => 0,
-          'override_label' => 0,
-          'label' => '',
-      ),
-      'views_bulk_operations_argument_selector_action' => array(
-          'selected' => 0,
-          'skip_confirmation' => 0,
-          'override_label' => 0,
-          'label' => '',
-          'settings' => array(
-              'url' => '',
-          ),
-      ),
-      'system_goto_action' => array(
-          'selected' => 0,
-          'use_queue' => 0,
-          'skip_confirmation' => 0,
-          'override_label' => 0,
-          'label' => '',
-      ),
-      'system_send_email_action' => array(
-          'selected' => 0,
-          'use_queue' => 0,
-          'skip_confirmation' => 0,
-          'override_label' => 0,
-          'label' => '',
-      ),
+    ),
+    'system_goto_action' => array(
+      'selected' => 0,
+      'use_queue' => 0,
+      'skip_confirmation' => 0,
+      'override_label' => 0,
+      'label' => '',
+    ),
+    'system_send_email_action' => array(
+      'selected' => 0,
+      'use_queue' => 0,
+      'skip_confirmation' => 0,
+      'override_label' => 0,
+      'label' => '',
+    ),
   );
   $handler->display->display_options['fields']['views_bulk_operations']['vbo']['enable_select_all_pages'] = 1;
   $handler->display->display_options['fields']['views_bulk_operations']['vbo']['display_type'] = '0';
@@ -253,7 +254,7 @@ function commerce_abandoned_cart_notification_views_default_views() {
   $handler->display->display_options['fields']['commerce_order_total']['click_sort_column'] = 'amount';
   $handler->display->display_options['fields']['commerce_order_total']['type'] = 'commerce_price_formatted_amount';
   $handler->display->display_options['fields']['commerce_order_total']['settings'] = array(
-      'calculation' => FALSE,
+    'calculation' => FALSE,
   );
   $handler->display->display_options['fields']['commerce_order_total']['field_api_classes'] = 0;
   /* Sort criterion: Commerce Order: Updated date */
@@ -266,14 +267,14 @@ function commerce_abandoned_cart_notification_views_default_views() {
   $handler->display->display_options['filters']['type']['table'] = 'commerce_order';
   $handler->display->display_options['filters']['type']['field'] = 'type';
   $handler->display->display_options['filters']['type']['value'] = array(
-      'commerce_order' => 'commerce_order',
+    'commerce_order' => 'commerce_order',
   );
   /* Filter criterion: Commerce Order: Order state */
   $handler->display->display_options['filters']['state']['id'] = 'state';
   $handler->display->display_options['filters']['state']['table'] = 'commerce_order';
   $handler->display->display_options['filters']['state']['field'] = 'state';
   $handler->display->display_options['filters']['state']['value'] = array(
-      'cart' => 'cart',
+    'cart' => 'cart',
   );
 
   /* Display: Abandoned carts */
@@ -283,61 +284,61 @@ function commerce_abandoned_cart_notification_views_default_views() {
   $handler->display->display_options['defaults']['style_plugin'] = FALSE;
   $handler->display->display_options['style_plugin'] = 'table';
   $handler->display->display_options['style_options']['grouping'] = array(
-      0 => array(
-          'field' => 'mail',
-          'rendered' => 1,
-      ),
+    0 => array(
+      'field' => 'mail',
+      'rendered' => 1,
+    ),
   );
   $handler->display->display_options['style_options']['columns'] = array(
-      'views_bulk_operations' => 'views_bulk_operations',
-      'order_id' => 'order_id',
-      'changed' => 'changed',
-      'mail' => 'mail',
-      'status' => 'status',
-      'commerce_order_total' => 'commerce_order_total',
+    'views_bulk_operations' => 'views_bulk_operations',
+    'order_id' => 'order_id',
+    'changed' => 'changed',
+    'mail' => 'mail',
+    'status' => 'status',
+    'commerce_order_total' => 'commerce_order_total',
   );
   $handler->display->display_options['style_options']['default'] = 'changed';
   $handler->display->display_options['style_options']['info'] = array(
-      'views_bulk_operations' => array(
-          'align' => '',
-          'separator' => '',
-          'empty_column' => 0,
-      ),
-      'order_id' => array(
-          'sortable' => 0,
-          'default_sort_order' => 'asc',
-          'align' => '',
-          'separator' => '',
-          'empty_column' => 0,
-      ),
-      'changed' => array(
-          'sortable' => 1,
-          'default_sort_order' => 'desc',
-          'align' => '',
-          'separator' => '',
-          'empty_column' => 0,
-      ),
-      'mail' => array(
-          'sortable' => 0,
-          'default_sort_order' => 'asc',
-          'align' => '',
-          'separator' => '',
-          'empty_column' => 0,
-      ),
-      'status' => array(
-          'sortable' => 0,
-          'default_sort_order' => 'asc',
-          'align' => '',
-          'separator' => '',
-          'empty_column' => 0,
-      ),
-      'commerce_order_total' => array(
-          'sortable' => 0,
-          'default_sort_order' => 'asc',
-          'align' => '',
-          'separator' => '',
-          'empty_column' => 0,
-      ),
+    'views_bulk_operations' => array(
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'order_id' => array(
+      'sortable' => 0,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'changed' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'desc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'mail' => array(
+      'sortable' => 0,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'status' => array(
+      'sortable' => 0,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'commerce_order_total' => array(
+      'sortable' => 0,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
   );
   $handler->display->display_options['style_options']['override'] = 1;
   $handler->display->display_options['style_options']['sticky'] = 0;
@@ -385,57 +386,57 @@ function commerce_abandoned_cart_notification_views_default_views() {
   $handler->display->display_options['fields']['views_bulk_operations']['hide_alter_empty'] = 1;
   $handler->display->display_options['fields']['views_bulk_operations']['vbo']['entity_load_capacity'] = '10';
   $handler->display->display_options['fields']['views_bulk_operations']['vbo']['operations'] = array(
-      'views_bulk_operations_delete_item' => array(
-          'selected' => 0,
-          'use_queue' => 0,
-          'skip_confirmation' => 0,
-          'override_label' => 0,
-          'label' => '',
+    'views_bulk_operations_delete_item' => array(
+      'selected' => 0,
+      'use_queue' => 0,
+      'skip_confirmation' => 0,
+      'override_label' => 0,
+      'label' => '',
+    ),
+    'system_message_action' => array(
+      'selected' => 0,
+      'use_queue' => 0,
+      'skip_confirmation' => 0,
+      'override_label' => 0,
+      'label' => '',
+    ),
+    'views_bulk_operations_script_action' => array(
+      'selected' => 0,
+      'use_queue' => 0,
+      'skip_confirmation' => 0,
+      'override_label' => 0,
+      'label' => '',
+    ),
+    'rules_notify_user_abandoned_cart' => array(
+      'selected' => 1,
+      'use_queue' => 0,
+      'skip_confirmation' => 0,
+      'override_label' => 0,
+      'label' => '',
+    ),
+    'views_bulk_operations_argument_selector_action' => array(
+      'selected' => 0,
+      'skip_confirmation' => 0,
+      'override_label' => 0,
+      'label' => '',
+      'settings' => array(
+        'url' => '',
       ),
-      'system_message_action' => array(
-          'selected' => 0,
-          'use_queue' => 0,
-          'skip_confirmation' => 0,
-          'override_label' => 0,
-          'label' => '',
-      ),
-      'views_bulk_operations_script_action' => array(
-          'selected' => 0,
-          'use_queue' => 0,
-          'skip_confirmation' => 0,
-          'override_label' => 0,
-          'label' => '',
-      ),
-      'rules_notify_user_abandoned_cart' => array(
-          'selected' => 1,
-          'use_queue' => 0,
-          'skip_confirmation' => 0,
-          'override_label' => 0,
-          'label' => '',
-      ),
-      'views_bulk_operations_argument_selector_action' => array(
-          'selected' => 0,
-          'skip_confirmation' => 0,
-          'override_label' => 0,
-          'label' => '',
-          'settings' => array(
-              'url' => '',
-          ),
-      ),
-      'system_goto_action' => array(
-          'selected' => 0,
-          'use_queue' => 0,
-          'skip_confirmation' => 0,
-          'override_label' => 0,
-          'label' => '',
-      ),
-      'system_send_email_action' => array(
-          'selected' => 0,
-          'use_queue' => 0,
-          'skip_confirmation' => 0,
-          'override_label' => 0,
-          'label' => '',
-      ),
+    ),
+    'system_goto_action' => array(
+      'selected' => 0,
+      'use_queue' => 0,
+      'skip_confirmation' => 0,
+      'override_label' => 0,
+      'label' => '',
+    ),
+    'system_send_email_action' => array(
+      'selected' => 0,
+      'use_queue' => 0,
+      'skip_confirmation' => 0,
+      'override_label' => 0,
+      'label' => '',
+    ),
   );
   $handler->display->display_options['fields']['views_bulk_operations']['vbo']['enable_select_all_pages'] = 1;
   $handler->display->display_options['fields']['views_bulk_operations']['vbo']['display_type'] = '0';
@@ -561,7 +562,7 @@ function commerce_abandoned_cart_notification_views_default_views() {
   $handler->display->display_options['fields']['commerce_order_total']['click_sort_column'] = 'amount';
   $handler->display->display_options['fields']['commerce_order_total']['type'] = 'commerce_price_formatted_amount';
   $handler->display->display_options['fields']['commerce_order_total']['settings'] = array(
-      'calculation' => FALSE,
+    'calculation' => FALSE,
   );
   $handler->display->display_options['fields']['commerce_order_total']['field_api_classes'] = 0;
   $handler->display->display_options['path'] = 'admin/commerce/orders/abandoned_carts';
@@ -595,35 +596,35 @@ function commerce_abandoned_cart_notification_views_default_views() {
   $handler->display->display_options['pager']['type'] = 'none';
   $handler->display->display_options['style_plugin'] = 'table';
   $handler->display->display_options['style_options']['columns'] = array(
-      'line_item_title' => 'line_item_title',
-      'commerce_unit_price' => 'commerce_unit_price',
-      'quantity' => 'quantity',
-      'commerce_total' => 'commerce_total',
+    'line_item_title' => 'line_item_title',
+    'commerce_unit_price' => 'commerce_unit_price',
+    'quantity' => 'quantity',
+    'commerce_total' => 'commerce_total',
   );
   $handler->display->display_options['style_options']['default'] = '-1';
   $handler->display->display_options['style_options']['info'] = array(
-      'line_item_title' => array(
-          'align' => '',
-          'separator' => '',
-      ),
-      'commerce_unit_price' => array(
-          'sortable' => 0,
-          'default_sort_order' => 'asc',
-          'align' => '',
-          'separator' => '',
-      ),
-      'quantity' => array(
-          'sortable' => 0,
-          'default_sort_order' => 'asc',
-          'align' => '',
-          'separator' => '',
-      ),
-      'commerce_total' => array(
-          'sortable' => 0,
-          'default_sort_order' => 'asc',
-          'align' => 'views-align-right',
-          'separator' => '',
-      ),
+    'line_item_title' => array(
+      'align' => '',
+      'separator' => '',
+    ),
+    'commerce_unit_price' => array(
+      'sortable' => 0,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+    ),
+    'quantity' => array(
+      'sortable' => 0,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+    ),
+    'commerce_total' => array(
+      'sortable' => 0,
+      'default_sort_order' => 'asc',
+      'align' => 'views-align-right',
+      'separator' => '',
+    ),
   );
   $handler->display->display_options['style_options']['override'] = 1;
   $handler->display->display_options['style_options']['sticky'] = 0;
@@ -681,7 +682,7 @@ function commerce_abandoned_cart_notification_views_default_views() {
   $handler->display->display_options['fields']['commerce_unit_price']['click_sort_column'] = 'amount';
   $handler->display->display_options['fields']['commerce_unit_price']['type'] = 'commerce_price_formatted_amount';
   $handler->display->display_options['fields']['commerce_unit_price']['settings'] = array(
-      'calculation' => FALSE,
+    'calculation' => FALSE,
   );
   $handler->display->display_options['fields']['commerce_unit_price']['field_api_classes'] = 0;
   /* Field: Commerce Line Item: Quantity */
@@ -732,7 +733,7 @@ function commerce_abandoned_cart_notification_views_default_views() {
   $handler->display->display_options['fields']['commerce_total']['click_sort_column'] = 'amount';
   $handler->display->display_options['fields']['commerce_total']['type'] = 'commerce_price_formatted_amount';
   $handler->display->display_options['fields']['commerce_total']['settings'] = array(
-      'calculation' => FALSE,
+    'calculation' => FALSE,
   );
   $handler->display->display_options['fields']['commerce_total']['field_api_classes'] = 0;
   /* Sort criterion: Commerce Line Item: Line item ID */
@@ -763,7 +764,7 @@ function commerce_abandoned_cart_notification_views_default_views() {
   $handler->display->display_options['filters']['state']['table'] = 'commerce_order';
   $handler->display->display_options['filters']['state']['field'] = 'state';
   $handler->display->display_options['filters']['state']['value'] = array(
-      'cart' => 'cart',
+    'cart' => 'cart',
   );
 
   /* Display: Abandoned Cart Token */

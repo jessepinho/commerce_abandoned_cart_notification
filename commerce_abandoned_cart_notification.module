@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Defines features and functions common to the Commerce Abandoned Cart Notification module.
+ */
+
+/**
  * Implements hook_commerce_order_status_info().
  */
 function commerce_abandoned_cart_notification_commerce_order_status_info() {
@@ -16,7 +21,6 @@ function commerce_abandoned_cart_notification_commerce_order_status_info() {
 
   return $order_statuses;
 }
-
 
 /**
  * Implements hook_views_api().
