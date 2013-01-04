@@ -2,12 +2,11 @@
 
 /**
  * @file
- * Define the new token added by the commerce_abandoned_cart_notification module.
+ * Add a token which contains the shopping cart view.
  */
 
 /**
  * Implements hook_token_info().
- * Create a token which will contain the abandoned cart view.
  */
 function commerce_abandoned_cart_notification_token_info() {
   $type = array(
@@ -31,7 +30,6 @@ function commerce_abandoned_cart_notification_token_info() {
 
 /**
  * Implements hook_tokens().
- * Fill the token with a view.
  */
 function commerce_abandoned_cart_notification_tokens($type, $tokens, array $data = array(), array $options = array()) {
   $replacements = array();
