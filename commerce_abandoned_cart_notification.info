@@ -6,5 +6,7 @@ dependencies[] = views
 dependencies[] = commerce
 dependencies[] = views_bulk_operations
 dependencies[] = rules
+dependencies[] = number
+dependencies[] = entityreference
 
 core = 7.x
