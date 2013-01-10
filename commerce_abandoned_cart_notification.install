@@ -1,0 +1,106 @@
+<?php
+
+/**
+ * @file
+ * Install file for the Commerce Abandoned Cart Notification module.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function commerce_abandoned_cart_notification_schema() {
+  return array(
+    'commerce_abandoned_cart_notification' => array(
+      'description' => 'A record of an abandoned shopping cart notification sent to a user.',
+      'fields' => array(
+        'id' => array(
+          'description' => 'Notification ID',
+          'type' => 'serial',
+          'not null' => TRUE,
+        ),
+        'uid' => array(
+          'description' => 'User ID of the user to whom this notification was sent.',
+          'type' => 'int',
+          'not null' => TRUE,
+        ),
+        'order_id' => array(
+          'description' => 'Order ID of the order for which this notification was sent.',
+          'type' => 'int',
+          'not null' => TRUE,
+        ),
+        'order_vid' => array(
+          'description' => 'Order revision ID of the order revision that was current when this notification was sent.',
+          'type' => 'int',
+          'not null' => TRUE,
+        ),
+        'created' => array(
+          'description' => 'The Unix timestamp when this notification was created.',
+          'type' => 'int',
+          'not null' => TRUE,
+        ),
+        'data' => array(
+          'type' => 'blob',
+          'not null' => FALSE,
+          'size' => 'big',
+          'serialize' => TRUE,
+          'description' => 'A serialized array of name value pairs that are related to the notification.',
+        ),
+      ),
+      'primary key' => array('id'),
+      'indexes' => array(
+        'order_id' => array('order_id', 'order_vid'),
+        'notification_created' => array('created'),
+        'uid' => array('uid'),
+      ),
+    ),
+  );
+}
+
+/**
+ * Create the {commerce_abandoned_cart_notification} table.
+ */
+function commerce_abandoned_cart_notification_update_7000() {
+  db_create_table('commerce_abandoned_cart_notification', array(
+    'description' => 'A record of an abandoned shopping cart notification sent to a user.',
+    'fields' => array(
+      'id' => array(
+        'description' => 'Notification ID',
+        'type' => 'serial',
+        'not null' => TRUE,
+      ),
+      'uid' => array(
+        'description' => 'User ID of the user to whom this notification was sent.',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'order_id' => array(
+        'description' => 'Order ID of the order for which this notification was sent.',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'order_vid' => array(
+        'description' => 'Order revision ID of the order revision that was current when this notification was sent.',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'created' => array(
+        'description' => 'The Unix timestamp when this notification was created.',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'data' => array(
+        'type' => 'blob',
+        'not null' => FALSE,
+        'size' => 'big',
+        'serialize' => TRUE,
+        'description' => 'A serialized array of name value pairs that are related to the notification.',
+      ),
+    ),
+    'primary key' => array('id'),
+    'indexes' => array(
+      'order_id' => array('order_id', 'order_vid'),
+      'notification_created' => array('created'),
+      'uid' => array('uid'),
+    ),
+  ));
+}
