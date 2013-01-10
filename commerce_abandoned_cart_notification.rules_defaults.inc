@@ -69,5 +69,71 @@ function commerce_abandoned_cart_notification_default_rules_configuration() {
   }
 }
 ');
+  $items['rules_commerce_abandoned_cart_notification_cron'] = entity_import('rules_config', '
+  { "rules_commerce_abandoned_cart_notification_cron" : {
+    "LABEL" : "Cron - send abandoned order notification",
+    "PLUGIN" : "rule",
+    "REQUIRES" : [ "rules", "commerce_abandoned_cart_notification" ],
+    "USES VARIABLES" : {
+      "abandoned_order" : { "label" : "Abandoned order", "type" : "commerce_order" },
+      "subject" : { "label" : "Subject", "type" : "text" },
+      "message" : { "label" : "Message", "type" : "text" },
+      "from" : { "label" : "From", "type" : "text" }
+    },
+    "IF" : [ { "NOT data_is_empty" : { "data" : [ "abandoned-order:mail" ] } } ],
+    "DO" : [
+      { "commerce_abandoned_cart_notification_log_notification_action" : { "changed" : [ "abandoned-order" ] } },
+      { "mail" : {
+          "to" : [ "abandoned-order:mail" ],
+          "subject" : [ "subject" ],
+          "message" : [ "message" ],
+          "from" : [ "from" ],
+          "language" : [ "" ]
+        }
+      }
+    ]
+  }
+}
+');
+  $items['rules_commerce_abandoned_cart_notifications_cron'] = entity_import('rules_config', '
+  { "rules_commerce_abandoned_cart_notifications_cron" : {
+    "LABEL" : "Cron - send abandoned order notifications",
+    "PLUGIN" : "reaction rule",
+    "REQUIRES" : [ "commerce_abandoned_cart_notification", "rules" ],
+    "ON" : [ "cron" ],
+    "DO" : [
+      { "commerce_abandoned_cart_notification_fetch_orders_action" : {
+          "USING" : {
+            "threshold" : "86400",
+            "statuses" : { "value" : {
+                "cart" : "cart",
+                "checkout_checkout" : "checkout_checkout",
+                "checkout_review" : "checkout_review",
+                "checkout_payment" : "checkout_payment"
+              }
+            },
+            "limit" : "1"
+          },
+          "PROVIDE" : { "orders" : { "orders" : "Abandoned orders" } }
+        }
+      },
+      { "LOOP" : {
+          "USING" : { "list" : [ "orders" ] },
+          "ITEM" : { "order" : "Order" },
+          "DO" : [
+            { "component_rules_commerce_abandoned_cart_notification_cron" : {
+                "abandoned_order" : [ "order" ],
+                "subject" : "[site:name] - Your order",
+                "message" : "Hi! Your order #[order:order-id] is waiting for you to check out! Please visit [site:url]checkout to complete your order.",
+                "from" : [ "site:mail" ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
+');
   return $items;
 }
