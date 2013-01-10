@@ -4,6 +4,7 @@ package = Commerce (notification)
 configure = admin/config/workflow/rules/components/manage/rules_notify_user_abandoned_cart
 dependencies[] = views
 dependencies[] = commerce
+dependencies[] = commerce_order
 dependencies[] = views_bulk_operations
 dependencies[] = rules
 dependencies[] = number
