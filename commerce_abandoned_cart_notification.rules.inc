@@ -65,18 +65,10 @@ function commerce_abandoned_cart_notification_rules_action_info() {
 /**
  * Fetch all orders with the given specifications.
  */
-function commerce_abandoned_cart_notification_fetch_orders_action($changed, $statuses, $limit, $delay) {
+function commerce_abandoned_cart_notification_fetch_orders_action($threshold, $statuses, $limit, $delay) {
   // Initiate the return value.
   $return = array('orders' => array());
 
-  // Build the query.
-  $query = db_select('commerce_order', 'co');
-  $query
-    ->fields('co', array('order_id'))
-    ->condition('changed', $changed, '<=')
-    ->condition('status', $statuses)
-  ;
-  $m_alias = $query->leftJoin('message', 'm');
   $query = db_query('
     SELECT
       co.order_id,
@@ -96,7 +88,7 @@ function commerce_abandoned_cart_notification_fetch_orders_action($changed, $sta
         OR last_message IS NULL)
     ORDER BY co.changed ASC
   ', array(
-    ':changed' => $changed,
+    ':changed' => REQUEST_TIME - $threshold,
     ':statuses' => $statuses,
     ':delay' => REQUEST_TIME - $delay,
     ':limit' => $limit,
