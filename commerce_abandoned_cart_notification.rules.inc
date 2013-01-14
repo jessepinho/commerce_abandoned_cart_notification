@@ -80,6 +80,7 @@ function commerce_abandoned_cart_notification_fetch_orders_action($threshold, $s
         ON cacn.order_id = co.order_id
     WHERE
       co.changed <= :changed
+      AND co.mail != :empty
       AND co.status IN (:statuses)
     GROUP BY cacn.order_id
     HAVING message_count < :limit
@@ -89,6 +90,7 @@ function commerce_abandoned_cart_notification_fetch_orders_action($threshold, $s
     ORDER BY co.changed ASC
   ', array(
     ':changed' => REQUEST_TIME - $threshold,
+    ':empty' => '',
     ':statuses' => $statuses,
     ':delay' => REQUEST_TIME - $delay,
     ':limit' => $limit,
