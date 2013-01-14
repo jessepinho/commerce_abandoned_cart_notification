@@ -82,7 +82,7 @@ function commerce_abandoned_cart_notification_fetch_orders_action($threshold, $s
       co.changed <= :changed
       AND co.mail != :empty
       AND co.status IN (:statuses)
-    GROUP BY cacn.order_id
+    GROUP BY co.order_id
     HAVING message_count < :limit
       AND
         (last_message <= :delay
