@@ -76,6 +76,9 @@ function commerce_abandoned_cart_notification_fetch_orders_action($threshold, $s
       MAX(cacn.created) AS last_message
     FROM
       {commerce_order} co
+      JOIN {commerce_line_item} cli
+        ON cli.order_id = co.order_id
+        AND cli.type = :product
       LEFT JOIN {commerce_abandoned_cart_notification} cacn
         ON cacn.order_id = co.order_id
     WHERE
@@ -89,6 +92,7 @@ function commerce_abandoned_cart_notification_fetch_orders_action($threshold, $s
         OR last_message IS NULL)
     ORDER BY co.changed ASC
   ', array(
+    ':product' => 'product', // to make sure a product line item exists
     ':changed' => REQUEST_TIME - $threshold,
     ':empty' => '',
     ':statuses' => $statuses,
