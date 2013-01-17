@@ -67,21 +67,3 @@ function commerce_abandoned_cart_notification_tokens($type, $tokens, array $data
 
   return $replacements;
 }
-
-/**
- * Retrieve the first line item of an order that references a product.
- */
-function commerce_abandoned_cart_notification_first_product_line_item($order) {
-  $ids = array_map('_commerce_abandoned_cart_notification_order_line_item_ids', $order->commerce_line_items[LANGUAGE_NONE]);
-  $line_items = commerce_line_item_load_multiple($ids);
-  foreach ($line_items as $line_item) {
-    if ($line_item->type == 'product') {
-      return $line_item;
-    }
-  }
-  return FALSE;
-}
-
-function _commerce_abandoned_cart_notification_order_line_item_ids($line_item) {
-  return $line_item['line_item_id'];
-}
