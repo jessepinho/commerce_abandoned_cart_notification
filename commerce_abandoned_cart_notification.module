@@ -2,9 +2,23 @@
 
 /**
  * @file
- * Defines features and functions common to the 
+ * Defines features and functions common to the
  * Commerce Abandoned Cart Notification module.
  */
+
+/**
+ * Implements hook_menu().
+ */
+function commerce_abandoned_cart_notification_menu() {
+  $items['commerce_abandoned_cart_notification/fetch/%commerce_order'] = array(
+    'title' => 'Fetch abandoned order',
+    'page callback' => 'commerce_abandoned_cart_notification_fetch_order',
+    'page arguments' => array(2),
+    'access callback' => TRUE,
+  );
+
+  return $items;
+}
 
 /**
  * Implements hook_commerce_order_status_info().
@@ -31,6 +45,35 @@ function commerce_abandoned_cart_notification_views_api() {
     'api' => 3,
     'path' => drupal_get_path('module', 'commerce_abandoned_cart_notification') . '/includes/views',
   );
+}
+
+/**
+ * Menu callback; retrieve an abandoned cart.
+ */
+function commerce_abandoned_cart_notification_fetch_order($order) {
+  // If the user is logged in, forward her to the appropriate checkout page.
+  if (user_is_logged_in()) {
+    drupal_goto(commerce_checkout_order_uri($order));
+  }
+  else {
+    // If the given order is in the user's session, redirect to that order's
+    // checkout page.
+    if (!empty($_SESSION['commerce_cart_orders']) && in_array($order->order_id, $_SESSION['commerce_cart_orders'])) {
+      drupal_goto(commerce_checkout_order_uri($order));
+    }
+    // Otherwise, display a message indicating that her cookies have expired.
+    else {
+      drupal_set_message(t('It looks like your browser\'s cookies were cleared or you logged out since starting your order. Please <a href="@url">log in</a> or start a new order to continue.', array('@url' => url('user', array('query' => array('destination' => commerce_checkout_order_uri($order)))))));
+      // If possible, forward the user to the product display by which she found
+      // the product.
+      $line_item = commerce_abandoned_cart_notification_first_product_line_item($order);
+      if (!empty($line_item->data['context']['display_path'])) {
+        drupal_goto($line_item->data['context']['display_path']);
+      }
+      // Otherwise, just go to the cart page.
+      drupal_goto('cart');
+    }
+  }
 }
 
 /**
