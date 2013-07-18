@@ -93,3 +93,64 @@ function commerce_abandoned_cart_notification_first_product_line_item($order) {
 function _commerce_abandoned_cart_notification_order_line_item_ids($line_item) {
   return $line_item['line_item_id'];
 }
+
+/**
+ * Implements hook_entity_property_info_alter().
+ */
+function commerce_abandoned_cart_notification_entity_property_info_alter(&$info) {
+  $info['message']['properties']['order'] = array(
+    'label' => t('Order'),
+    'type' => 'commerce_order',
+    'setter callback' => 'entity_property_verbatim_set',
+    'computed' => TRUE,
+  );
+}
+
+/**
+ * Implements hook_entity_insert().
+ */
+function commerce_abandoned_cart_notification_entity_insert($entity, $type) {
+  if ($type == 'message' && !empty($entity->order)) {
+    $order = commerce_order_load($entity->order);
+    $record = array(
+      'order_id' => $order->order_id,
+      'order_vid' => $order->revision_id,
+      'mid' => $entity->mid,
+    );
+    drupal_write_record('commerce_abandoned_cart_notification', $record);
+  }
+}
+
+/**
+ * Implements hook_entity_load().
+ */
+function commerce_abandoned_cart_notification_entity_load($entities, $type) {
+  if ($type == 'message') {
+    // Get all the order IDs at once to minimize database queries.
+    $mids = array_map('_commerce_abandoned_cart_notification_mids', $entities);
+    $result = db_select('commerce_abandoned_cart_notification', 'cacn')
+      ->fields('cacn')
+      ->condition('mid', $mids)
+      ->execute()
+      ->fetchAll();
+
+    // Match the orders to their message entities.
+    foreach ($result as $row) {
+      foreach ($entities as $entity) {
+        if ($row->mid == $entity->mid) {
+          $entity->order = commerce_order_load($row->order_id);
+          // Skip to the next $row.
+          break;
+        }
+      }
+    }
+  }
+}
+
+function _commerce_abandoned_cart_notification_mids($item) {
+  return $item->mid;
+}
+
+function _commerce_abandoned_cart_notification_order_ids($item) {
+  return $item->order_id;
+}
