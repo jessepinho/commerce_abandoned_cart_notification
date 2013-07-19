@@ -133,6 +133,10 @@ class CommerceAbandonedCartNotificationEntityAPIController extends EntityAPICont
 }
 
 function commerce_abandoned_cart_notification_config_label($entity, $entity_type) {
+  if (!empty($entity->is_new)) {
+    return t('Abandoned order notification');
+  }
+
   if ('commerce_abandoned_cart_notification_config' == $entity_type) {
     $delay = _commerce_abandoned_cart_notification_delay_to_array($entity->delay);
     $options = commerce_abandoned_cart_notification_config_form_units();
