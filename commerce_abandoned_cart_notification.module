@@ -204,33 +204,27 @@ function _commerce_abandoned_cart_notification_order_ids($item) {
  * Present a form for editing abandoned cart notification configs.
  */
 function commerce_abandoned_cart_notification_config_form($form, &$form_state, $config, $op = 'edit') {
-  $config->delay_amount = 0;
-  $config->delay_units = 1;
-  if ($config->delay) {
-    $units = array_keys(commerce_abandoned_cart_notification_config_form_units());
-    while (!($config->delay % $units[0])) {
-      $config->delay_units = array_shift($units);
-    }
-    $config->delay_amount = $config->delay / $config->delay_units;
-  }
-
-  $form['delay_amount'] = array(
+  $delay = _commerce_abandoned_cart_notification_delay_to_array($config->delay);
+  $form['delay'] = array('#tree' => TRUE);
+  $form['delay']['amount'] = array(
     '#type' => 'textfield',
-    '#title' => t('Delay'),
-    '#default_value' => $config->delay_amount,
+    '#title' => t('After an order has been abandoned for...'),
+    '#default_value' => $delay['amount'],
   );
-  $form['delay_units'] = array(
+  $form['delay']['units'] = array(
     '#type' => 'select',
     '#options' => commerce_abandoned_cart_notification_config_form_units(),
-    '#default_value' => $config->delay_units,
+    '#default_value' => $delay['units'],
   );
 
   $form['message_type'] = array(
     '#type' => 'select',
-    '#title' => t('Send message'),
-    '#options' => array(),
+    '#title' => t('...send the following message:'),
     '#default_value' => $config->message_type,
   );
+  foreach (message_type_load() as $name => $message_type) {
+    $form['message_type']['#options'][$name] = $message_type->description;
+  }
 
   $form['active'] = array(
     '#type' => 'checkbox',
@@ -259,4 +253,35 @@ function commerce_abandoned_cart_notification_config_form_units() {
     60 * 60 * 24 * 30 => t('month(s)'),
     60 * 60 * 24 * 365 => t('year(s)'),
   );
+}
+
+/**
+ * Utility function; get the config delay as an amount/units pair.
+ *
+ * @param $delay
+ *   A number of seconds.
+ */
+function _commerce_abandoned_cart_notification_delay_to_array($delay) {
+  $amount = 0;
+  $units = 1;
+  if ($delay) {
+    $units_array = array_keys(commerce_abandoned_cart_notification_config_form_units());
+    while (!($delay % $units_array[0])) {
+      $units = array_shift($units_array);
+    }
+    $amount = $delay / $units;
+  }
+
+  return array('amount' => $amount, 'units' => $units);
+}
+
+/**
+ * And do the reverse.
+ *
+ * @param $array
+ *   An array as output by
+ *   _commerce_abandoned_cart_notification_delay_to_array().
+ */
+function _commerce_abandoned_cart_notification_array_to_delay($array) {
+  return $array['amount'] * $array['units'];
 }
