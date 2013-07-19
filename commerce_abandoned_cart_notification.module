@@ -323,3 +323,16 @@ function _commerce_abandoned_cart_notification_delay_to_array($delay) {
 function _commerce_abandoned_cart_notification_array_to_delay($array) {
   return $array['amount'] * $array['units'];
 }
+
+/**
+ * Count how many notifications based on a given config have been sent.
+ *
+ * @return
+ *   The number of notifications sent.
+ */
+function commerce_abandoned_cart_notification_count($config) {
+  $query = db_select('commerce_abandoned_cart_notification', 'cacn')
+    ->condition('config', $config->id);
+  $query->addExpression('COUNT(mid)');
+  return $query->execute()->fetchField();
+}
