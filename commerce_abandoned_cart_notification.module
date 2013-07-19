@@ -272,6 +272,10 @@ function commerce_abandoned_cart_notification_config_form_validate($form, &$form
   if (!is_numeric($form_state['values']['delay']['amount'])) {
     form_set_error('delay_amount', t('Please enter a valid numeric value.'));
   }
+
+  if (empty($form_state['values']['message_type'])) {
+    form_set_error('message_type', t('Please select a message to send.'));
+  }
 }
 
 function commerce_abandoned_cart_notification_config_form_submit($form, $form_state) {
