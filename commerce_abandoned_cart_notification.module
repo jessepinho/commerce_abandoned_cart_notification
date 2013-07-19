@@ -152,7 +152,12 @@ function commerce_abandoned_cart_notification_config_label($entity, $entity_type
 /**
  * Determine access for administering abandoned cart notifications.
  */
-function commerce_abandoned_cart_notification_admin_access($op, $entity = NULL, $account = NULL) {
+function commerce_abandoned_cart_notification_admin_access($op, $entity = NULL, $account = NULL, $entity_type) {
+  if ('delete' == $op) {
+    if (commerce_abandoned_cart_notification_count($entity)) {
+      return FALSE;
+    }
+  }
   return user_access('administer commerce abandoned cart notifications', $account);
 }
 
