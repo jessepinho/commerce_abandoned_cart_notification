@@ -100,8 +100,8 @@ function _commerce_abandoned_cart_notification_order_line_item_ids($line_item) {
 function commerce_abandoned_cart_notification_entity_info() {
   return array(
     'commerce_abandoned_cart_notification_config' => array(
-      'label' => t('Abandoned cart notification config'),
-      'controller class' => 'EntityAPIController',
+      'label' => t('Abandoned cart notification configuration'),
+      'controller class' => 'CommerceAbandonedCartNotificationEntityAPIController',
       'entity class' => 'Entity',
       'base table' => 'commerce_abandoned_cart_notification_config',
       'fieldable' => FALSE,
@@ -114,6 +114,20 @@ function commerce_abandoned_cart_notification_entity_info() {
       ),
     ),
   );
+}
+
+class CommerceAbandonedCartNotificationEntityAPIController extends EntityAPIController {
+
+  public function create(array $values = array()) {
+    // Set defaults
+    $values += array(
+      'delay' => 0,
+      'message_type' => '',
+      'active' => 0,
+    );
+    return parent::create($values);
+  }
+
 }
 
 /**
