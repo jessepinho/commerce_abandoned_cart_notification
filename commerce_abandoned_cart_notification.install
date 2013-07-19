@@ -26,11 +26,54 @@ function commerce_abandoned_cart_notification_schema() {
         'mid' => array(
           'description' => 'Message ID of the message sent for this order.',
           'type' => 'int',
+          'not null' => TRUE,
+          'default' => 0,
+        ),
+        'config' => array(
+          'description' => 'The id of the config that generated this message.',
+          'type' => 'int',
+          'not null' => TRUE,
+          'default' => 0,
         ),
       ),
       'indexes' => array(
         'order_id' => array('order_id', 'order_vid'),
         'mid' => array('mid'),
+        'config' => array('config'),
+      ),
+    ),
+    'commerce_abandoned_cart_notification_config' => array(
+      'description' => 'A configuration for abandoned cart notifications.',
+      'fields' => array(
+        'id' => array(
+          'description' => 'The configuration ID',
+          'type' => 'serial',
+          'not null' => TRUE,
+        ),
+        'delay' => array(
+          'description' => 'The number of seconds after an order has been abandoned, after which this notification should be sent.',
+          'type' => 'int',
+          'not null' => TRUE,
+        ),
+        'message_type' => array(
+          'description' => 'The {message_type}.name of the message type to send.',
+          'type' => 'varchar',
+          'length' => 255,
+          'not null' => TRUE,
+          'default' => '',
+        ),
+        'active' => array(
+          'description' => 'Boolean indicating whether this configuration is active.',
+          'type' => 'int',
+          'size' => 'tiny',
+          'not null' => TRUE,
+          'default' => 0,
+        ),
+      ),
+      'primary key' => array('id'),
+      'indexes' => array(
+        'delay' => array('delay'),
+        'active' => array('active'),
       ),
     ),
   );
@@ -104,3 +147,71 @@ function commerce_abandoned_cart_notification_update_7001() {
   ));
   db_add_index('commerce_abandoned_cart_notification', 'mid', array('mid'));
 }
+
+/**
+ * Create the {commerce_abandoned_cart_notification_config} table. Make
+ * {commerce_abandoned_cart_notification}.mid NOT NULL. Add a config reference
+ * field to {commerce_abandoned_cart_notification} to indicate which config
+ * generated the message.
+ */
+function commerce_abandoned_cart_notification_update_7002() {
+  db_create_table('commerce_abandoned_cart_notification_config', array(
+    'description' => 'A configuration for abandoned cart notifications.',
+    'fields' => array(
+      'id' => array(
+        'description' => 'The configuration ID',
+        'type' => 'serial',
+        'not null' => TRUE,
+      ),
+      'delay' => array(
+        'description' => 'The number of seconds after an order has been abandoned, after which this notification should be sent.',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'message_type' => array(
+        'description' => 'The {message_type}.name of the message type to send.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'active' => array(
+        'description' => 'Boolean indicating whether this configuration is active.',
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('id'),
+    'indexes' => array(
+      'delay' => array('delay'),
+      'active' => array('active'),
+    ),
+  ));
+
+  // Before modifying the mid field, we have to drop the index on it. See the
+  // documentation for db_change_field().
+  db_drop_index('commerce_abandoned_cart_notification', 'mid');
+  // We also have to set all of its NULL values to 0, so that there aren't any
+  // errors when we set it to NOT NULL.
+  db_update('commerce_abandoned_cart_notification')
+    ->fields(array('mid' => 0))
+    ->isNull('mid')
+    ->execute();
+  // Finally, change the field.
+  db_change_field('commerce_abandoned_cart_notification', 'mid', 'mid', array(
+    'description' => 'Message ID of the message sent for this order.',
+    'type' => 'int',
+    'not null' => TRUE,
+    'default' => 0,
+  ), array('indexes' => array('mid' => array('mid'))));
+
+  db_add_field('commerce_abandoned_cart_notification', 'config', array(
+    'description' => 'The id of the config that generated this message.',
+    'type' => 'int',
+    'not null' => TRUE,
+    'default' => 0,
+  ), array('indexes' => array('config' => array('config'))));
+}
+

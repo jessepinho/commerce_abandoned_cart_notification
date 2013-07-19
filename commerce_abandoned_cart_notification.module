@@ -101,11 +101,10 @@ function commerce_abandoned_cart_notification_entity_info() {
   return array(
     'commerce_abandoned_cart_notification_config' => array(
       'label' => t('Abandoned cart notification config'),
-      'controller class' => 'EntityAPIControllerExportable',
+      'controller class' => 'EntityAPIController',
       'entity class' => 'Entity',
       'base table' => 'commerce_abandoned_cart_notification_config',
       'fieldable' => FALSE,
-      'exportable' => TRUE,
       'label callback' => 'commerce_abandoned_cart_notification_config_label',
       'entity keys' => array(
         'id' => 'id',
