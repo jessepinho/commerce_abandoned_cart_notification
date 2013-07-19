@@ -301,17 +301,20 @@ function commerce_abandoned_cart_notification_config_form_submit($form, &$form_s
  *   A number of seconds.
  */
 function _commerce_abandoned_cart_notification_delay_to_array($delay) {
-  $amount = 0;
-  $units = 1;
+  $array = array(
+    'amount' => 0,
+    'units' => 1,
+  );
   if ($delay) {
-    $units_array = array_keys(commerce_abandoned_cart_notification_config_form_units());
-    while (!($delay % $units_array[0])) {
-      $units = array_shift($units_array);
+    foreach(array_keys(commerce_abandoned_cart_notification_config_form_units()) as $units) {
+      if (!($delay % $units)) {
+        $array['units'] = $units;
+      }
     }
-    $amount = $delay / $units;
+    $array['amount'] = $delay / $array['units'];
   }
 
-  return array('amount' => $amount, 'units' => $units);
+  return $array;
 }
 
 /**
