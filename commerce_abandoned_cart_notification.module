@@ -132,6 +132,19 @@ class CommerceAbandonedCartNotificationEntityAPIController extends EntityAPICont
 
 }
 
+function commerce_abandoned_cart_notification_config_label($entity, $entity_type) {
+  if ('commerce_abandoned_cart_notification_config' == $entity_type) {
+    $delay = _commerce_abandoned_cart_notification_delay_to_array($entity->delay);
+    $options = commerce_abandoned_cart_notification_config_form_units();
+    $message_types = message_type_load();
+    return t('Send "@message" to orders abandoned for @amount @units', array(
+      '@message' => $message_types[$entity->message_type]->description,
+      '@amount' => $delay['amount'],
+      '@units' => $options[$delay['units']],
+    ));
+  }
+}
+
 /**
  * Determine access for administering abandoned cart notifications.
  */
