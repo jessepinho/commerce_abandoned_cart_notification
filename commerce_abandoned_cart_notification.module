@@ -109,8 +109,10 @@ function commerce_abandoned_cart_notification_entity_info() {
       'entity keys' => array(
         'id' => 'id',
       ),
+      'access callback' => 'commerce_abandoned_cart_notification_admin_access',
       'admin ui' => array(
-        'path' => 'admin/commerce/config/commerce_abandoned_cart_notification',
+        'path' => 'admin/commerce/config/abandoned_cart_notification',
+        'controller class' => 'EntityDefaultUIController',
       ),
     ),
   );
@@ -128,6 +130,13 @@ class CommerceAbandonedCartNotificationEntityAPIController extends EntityAPICont
     return parent::create($values);
   }
 
+}
+
+/**
+ * Determine access for administering abandoned cart notifications.
+ */
+function commerce_abandoned_cart_notification_admin_access($op, $entity = NULL, $account = NULL) {
+  return user_access('administer commerce abandoned cart notifications', $account);
 }
 
 /**
@@ -189,4 +198,65 @@ function _commerce_abandoned_cart_notification_mids($item) {
 
 function _commerce_abandoned_cart_notification_order_ids($item) {
   return $item->order_id;
+}
+
+/**
+ * Present a form for editing abandoned cart notification configs.
+ */
+function commerce_abandoned_cart_notification_config_form($form, &$form_state, $config, $op = 'edit') {
+  $config->delay_amount = 0;
+  $config->delay_units = 1;
+  if ($config->delay) {
+    $units = array_keys(commerce_abandoned_cart_notification_config_form_units());
+    while (!($config->delay % $units[0])) {
+      $config->delay_units = array_shift($units);
+    }
+    $config->delay_amount = $config->delay / $config->delay_units;
+  }
+
+  $form['delay_amount'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Delay'),
+    '#default_value' => $config->delay_amount,
+  );
+  $form['delay_units'] = array(
+    '#type' => 'select',
+    '#options' => commerce_abandoned_cart_notification_config_form_units(),
+    '#default_value' => $config->delay_units,
+  );
+
+  $form['message_type'] = array(
+    '#type' => 'select',
+    '#title' => t('Send message'),
+    '#options' => array(),
+    '#default_value' => $config->message_type,
+  );
+
+  $form['active'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Active'),
+    '#default_value' => $config->active,
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save'),
+  );
+
+  return $form;
+}
+
+/**
+ * Return an array of time units, fit for use for a <select>'s #options.
+ */
+function commerce_abandoned_cart_notification_config_form_units() {
+  return array(
+    1 => t('second(s)'),
+    60 => t('minute(s)'),
+    60 * 60 => t('hour(s)'),
+    60 * 60 * 24 => t('day(s)'),
+    60 * 60 * 24 * 7 => t('week(s)'),
+    60 * 60 * 24 * 30 => t('month(s)'),
+    60 * 60 * 24 * 365 => t('year(s)'),
+  );
 }
