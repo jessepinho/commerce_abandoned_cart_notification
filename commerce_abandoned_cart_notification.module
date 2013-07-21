@@ -306,9 +306,10 @@ function _commerce_abandoned_cart_notification_delay_to_array($delay) {
     'units' => 1,
   );
   if ($delay) {
-    foreach(array_keys(commerce_abandoned_cart_notification_config_form_units()) as $units) {
-      if (!($delay % $units)) {
-        $array['units'] = $units;
+    $units = array_keys(commerce_abandoned_cart_notification_config_form_units());
+    while ($array['units'] = array_pop($units)) {
+      if (!($delay % $array['units'])) {
+        break;
       }
     }
     $array['amount'] = $delay / $array['units'];
