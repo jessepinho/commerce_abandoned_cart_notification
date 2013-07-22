@@ -126,8 +126,19 @@ class CommerceAbandonedCartNotificationEntityAPIController extends EntityAPICont
       'delay' => 0,
       'message_type' => '',
       'active' => 1,
+      'data' => array('statuses' => array('cart')),
     );
     return parent::create($values);
+  }
+
+  public function load($ids = array(), $conditions = array()) {
+    $entities = parent::load($ids, $conditions);
+    foreach ($entities as $entity) {
+      if (empty($entity->data['statuses'])) {
+        $entity->data['statuses'] = array();
+      }
+    }
+    return $entities;
   }
 
 }
