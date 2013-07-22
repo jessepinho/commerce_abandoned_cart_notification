@@ -69,6 +69,13 @@ function commerce_abandoned_cart_notification_schema() {
           'not null' => TRUE,
           'default' => 0,
         ),
+        'data' => array(
+          'description' => 'Data related to this configuration.',
+          'type' => 'blob',
+          'size' => 'big',
+          'not null' => FALSE,
+          'serialize' => TRUE,
+        ),
       ),
       'primary key' => array('id'),
       'indexes' => array(
@@ -215,3 +222,15 @@ function commerce_abandoned_cart_notification_update_7002() {
   ), array('indexes' => array('config' => array('config'))));
 }
 
+/**
+ * Create the {commerce_abandoned_cart_notification_config}.data field.
+ */
+function commerce_abandoned_cart_notification_update_7003() {
+  db_add_field('commerce_abandoned_cart_notification_config', 'data', array(
+    'description' => 'Data related to this configuration.',
+    'type' => 'blob',
+    'size' => 'big',
+    'not null' => FALSE,
+    'serialize' => TRUE,
+  ));
+}
