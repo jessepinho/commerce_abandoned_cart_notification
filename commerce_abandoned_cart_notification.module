@@ -366,3 +366,66 @@ function commerce_abandoned_cart_notification_count($config) {
   $query->addExpression('COUNT(mid)');
   return $query->execute()->fetchField();
 }
+
+/**
+ * Get all orders eligible for a given notification config.
+ */
+function commerce_abandoned_cart_notification_config_orders($config) {
+  // If there are no statuses chosen for this configuration, return an empty
+  // array (since by definition, there aren't any eligible orders).
+  if (empty($config->data['statuses'])) {
+    return array();
+  }
+  $query = db_query('
+    SELECT
+      co.order_id
+    FROM
+      {commerce_order} co
+      # Via a subquery, generate (and LEFT JOIN to) an ad-hoc table of all
+      # orders whose notifications have been sent. Grab the maximum delay
+      # field from the configuration table as well, so we know which was the
+      # most recent notification sent.
+      LEFT JOIN (
+        SELECT
+          MAX(cacnc.delay) AS delay,
+          cacn.order_id
+        FROM
+          {commerce_abandoned_cart_notification_config} cacnc
+          JOIN {commerce_abandoned_cart_notification} cacn
+            ON cacn.config = cacnc.id
+        GROUP BY cacn.order_id
+      ) cacnc
+        ON cacnc.order_id = co.order_id
+      JOIN {commerce_line_item} cli
+        ON cli.order_id = co.order_id
+    WHERE
+      # The order must be at least as old as the delay
+      co.changed <= UNIX_TIMESTAMP() - :delay
+      AND co.mail != :empty
+      AND (
+        # Either the delay of the last notification sent must be smaller than
+        # the delay of the current notification...
+        cacnc.delay < :delay
+        # ...or no notifications must have been sent yet.
+        OR cacnc.delay IS NULL
+      )
+      # Only return orders with the chosen statuses.
+      AND co.status IN (:statuses)
+      # Only return orders with product line items.
+      AND cli.type = :product
+    # Since one order can have multiple product line items, group by order ID.
+    GROUP BY co.order_id
+  ', array(
+    ':empty' => '',
+    ':delay' => $config->delay,
+    ':statuses' => $config->data['statuses'],
+    ':product' => 'product'
+  ));
+
+  // For efficiency, load all the orders at once, rather than one at a time.
+  $order_ids = array();
+  foreach ($query->fetchAll() as $order) {
+    $order_ids[] = $order->order_id;
+  }
+  return commerce_order_load_multiple($order_ids);
+}
