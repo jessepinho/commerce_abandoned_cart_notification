@@ -241,6 +241,7 @@ function _commerce_abandoned_cart_notification_order_ids($item) {
  */
 function commerce_abandoned_cart_notification_config_form($form, &$form_state, $config, $op = 'edit') {
   $delay = _commerce_abandoned_cart_notification_delay_to_array($config->delay);
+  $statuses = empty($config->data['statuses']) ? array() : $config->data['statuses'];
   $form['delay'] = array('#tree' => TRUE);
   $form['delay']['amount'] = array(
     '#type' => 'textfield',
@@ -255,12 +256,22 @@ function commerce_abandoned_cart_notification_config_form($form, &$form_state, $
 
   $form['message_type'] = array(
     '#type' => 'select',
-    '#title' => t('...send the following message:'),
+    '#title' => t('...send the following message...'),
     '#default_value' => $config->message_type,
   );
   foreach (message_type_load() as $name => $message_type) {
     $form['message_type']['#options'][$name] = $message_type->description;
   }
+
+  $form['data'] = array('#tree' => TRUE);
+  $form['data']['statuses'] = array(
+    '#type' => 'select',
+    '#title' => t('...to orders with the following statuses:'),
+    '#options' => commerce_order_status_options_list(),
+    '#multiple' => TRUE,
+    '#size' => 10,
+    '#default_value' => $statuses,
+  );
 
   $form['active'] = array(
     '#type' => 'checkbox',
