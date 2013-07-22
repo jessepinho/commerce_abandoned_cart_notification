@@ -368,6 +368,29 @@ function commerce_abandoned_cart_notification_count($config) {
 }
 
 /**
+ * Implements hook_cron().
+ */
+function commerce_abandoned_cart_notification_cron() {
+  // Find all active notification configs.
+  $query = db_select('commerce_abandoned_cart_notification_config', 'cacnc')
+    ->fields('cacnc')
+    ->condition('active', 1)
+    ->orderBy('delay', 'DESC')
+    ->execute();
+  foreach ($query->fetchAll() as $config) {
+    // Iterate over the orders, creating messages for them.
+    $config->data = unserialize($config->data);
+    foreach (commerce_abandoned_cart_notification_config_orders($config) as $order) {
+      $message = message_create($config->message_type, array('uid' => $order->uid));
+      $message->order = $order;
+      $message->order->commerce_abandoned_cart_notification_config = $config->id;
+      message_save($message);
+      message_notify_send_message($message, array('mail' => $order->mail));
+    }
+  }
+}
+
+/**
  * Get all orders eligible for a given notification config.
  */
 function commerce_abandoned_cart_notification_config_orders($config) {
