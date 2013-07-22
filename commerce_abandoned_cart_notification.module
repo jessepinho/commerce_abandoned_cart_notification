@@ -188,12 +188,12 @@ function commerce_abandoned_cart_notification_entity_property_info_alter(&$info)
  * Implements hook_entity_insert().
  */
 function commerce_abandoned_cart_notification_entity_insert($entity, $type) {
-  if ($type == 'message' && !empty($entity->order)) {
-    $order = commerce_order_load($entity->order);
+  if ($type == 'message' && !empty($entity->order->commerce_abandoned_cart_notification_config)) {
     $record = array(
-      'order_id' => $order->order_id,
-      'order_vid' => $order->revision_id,
+      'order_id' => $entity->order->order_id,
+      'order_vid' => $entity->order->revision_id,
       'mid' => $entity->mid,
+      'config' => $entity->order->commerce_abandoned_cart_notification_config,
     );
     drupal_write_record('commerce_abandoned_cart_notification', $record);
   }
@@ -215,8 +215,11 @@ function commerce_abandoned_cart_notification_entity_load($entities, $type) {
     // Match the orders to their message entities.
     foreach ($result as $row) {
       foreach ($entities as $entity) {
+        // Set a default (NULL) value.
+        $entity->order = NULL;
         if ($row->mid == $entity->mid) {
           $entity->order = commerce_order_load($row->order_id);
+          $entity->order->commerce_abandoned_cart_notification_config = $row->config;
           // Skip to the next $row.
           break;
         }
