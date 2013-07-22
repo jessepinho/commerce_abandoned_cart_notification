@@ -9,12 +9,6 @@
  * Implements hook_token_info().
  */
 function commerce_abandoned_cart_notification_token_info() {
-  $type = array(
-    'name' => t('Orders', array(), array('context' => 'a drupal commerce order')),
-    'description' => t('Tokens related to individual orders.'),
-    'needs-data' => 'commerce-order',
-  );
-
   // Define the token for the shopping cart.
   $order = array();
   $order['abandoned-cart-view'] = array(
@@ -28,7 +22,6 @@ function commerce_abandoned_cart_notification_token_info() {
   );
 
   return array(
-    'types' => array('commerce-order' => $type),
     'tokens' => array('commerce-order' => $order),
   );
 }
