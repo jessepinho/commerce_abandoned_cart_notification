@@ -125,7 +125,7 @@ class CommerceAbandonedCartNotificationEntityAPIController extends EntityAPICont
     $values += array(
       'delay' => 0,
       'message_type' => '',
-      'active' => 0,
+      'active' => 1,
     );
     return parent::create($values);
   }
