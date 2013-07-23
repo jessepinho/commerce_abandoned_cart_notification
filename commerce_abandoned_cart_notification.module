@@ -38,16 +38,6 @@ function commerce_abandoned_cart_notification_commerce_order_status_info() {
 }
 
 /**
- * Implements hook_views_api().
- */
-function commerce_abandoned_cart_notification_views_api() {
-  return array(
-    'api' => 3,
-    'path' => drupal_get_path('module', 'commerce_abandoned_cart_notification') . '/includes/views',
-  );
-}
-
-/**
  * Menu callback; retrieve an abandoned cart.
  */
 function commerce_abandoned_cart_notification_fetch_order($order) {
