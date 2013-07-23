@@ -234,3 +234,17 @@ function commerce_abandoned_cart_notification_update_7003() {
     'serialize' => TRUE,
   ));
 }
+
+/**
+ * Delete the previous default rules.
+ *
+ * This is necessary in case the rules have been overidden in the database and
+ * thus remain even after updating the module.
+ */
+function commerce_abandoned_cart_notification_update_7004() {
+  rules_config_delete(array(
+    'rules_commerce_abandoned_cart_notification_cron',
+    'rules_commerce_abandoned_cart_notifications_cron',
+    'rules_notify_user_abandoned_cart',
+  ));
+}
