@@ -2,16 +2,11 @@ name = Abandoned Cart Notification
 description = Send notifications to your customers who have forgotten about their order.
 package = Commerce (contrib)
 configure = admin/commerce/config/abandoned_cart_notification
-dependencies[] = views
 dependencies[] = commerce
 dependencies[] = commerce_cart
 dependencies[] = commerce_line_item
 dependencies[] = commerce_order
 dependencies[] = message
 dependencies[] = message_notify
-dependencies[] = views_bulk_operations
-dependencies[] = rules
-dependencies[] = number
-dependencies[] = entityreference
 
 core = 7.x
