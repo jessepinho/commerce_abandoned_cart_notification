@@ -21,23 +21,6 @@ function commerce_abandoned_cart_notification_menu() {
 }
 
 /**
- * Implements hook_commerce_order_status_info().
- */
-function commerce_abandoned_cart_notification_commerce_order_status_info() {
-  $order_statuses = array();
-
-  // Create a new status for orders whom already received a notification.
-  $order_statuses['user_notified'] = array(
-    'name' => 'user_notified',
-    'title' => t('User notified'),
-    'state' => 'cart',
-    'weight' => 2,
-  );
-
-  return $order_statuses;
-}
-
-/**
  * Menu callback; retrieve an abandoned cart.
  */
 function commerce_abandoned_cart_notification_fetch_order($order) {
