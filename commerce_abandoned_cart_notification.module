@@ -350,17 +350,59 @@ function commerce_abandoned_cart_notification_cron() {
     ->condition('active', 1)
     ->orderBy('delay', 'DESC')
     ->execute();
+
+  // Set up a cron queue to handle Message Notify functionality. This is
+  // especially necessary for when a new abandoned cart notification config is
+  // created, since, as a result, all abandoned orders in the history of this
+  // Drupal instance will have a new message sent to them.
+  $queue = DrupalQueue::get('commerce_abandoned_cart_notification');
+
   foreach ($query->fetchAll() as $config) {
-    // Iterate over the orders, creating messages for them.
     $config->data = unserialize($config->data);
-    foreach (commerce_abandoned_cart_notification_config_orders($config) as $order) {
-      $message = message_create($config->message_type, array('uid' => $order->uid));
-      $message->order = $order;
-      $message->order->commerce_abandoned_cart_notification_config = $config->id;
-      message_save($message);
-      message_notify_send_message($message, array('mail' => $order->mail));
+    // Iterate over the orders, creating queue items for them.
+    foreach (commerce_abandoned_cart_notification_config_orders($config) as $order_id) {
+      // Queue up this message to be sent.
+      $queue_item = array(
+        'config' => $config,
+        'order_id' => $order_id,
+      );
+      $queue->createItem($queue_item);
     }
   }
+}
+
+/**
+ * Implements hook_cron_queue_info().
+ */
+function commerce_abandoned_cart_notification_cron_queue_info() {
+  return array(
+    'commerce_abandoned_cart_notification' => array(
+      'worker callback' => 'commerce_abandoned_cart_notification_send',
+    ),
+  );
+}
+
+function commerce_abandoned_cart_notification_send($notification) {
+  $config = $notification['config'];
+  $order_id = $notification['order_id'];
+
+  // Double-check that this message is still eligible for a notification, in
+  // case cron ran multiple times before this order's notification was sent and
+  // thus queued up multiple notifications for the same order.
+  $order_eligible = commerce_abandoned_cart_notification_config_orders($config, $order_id);
+  if (empty($order_eligible)) {
+    return;
+  }
+
+  // Create the message.
+  $order = commerce_order_load($order_id);
+  $message = message_create($config->message_type, array('uid' => $order->uid));
+  $message->order = $order;
+  $message->order->commerce_abandoned_cart_notification_config = $config->id;
+  message_save($message);
+
+  // Send.
+  message_notify_send_message($message, array('mail' => $order->mail));
 }
 
 /**
@@ -446,5 +488,5 @@ function commerce_abandoned_cart_notification_config_orders($config, $order_id =
   foreach ($query->fetchAll() as $order) {
     $order_ids[] = $order->order_id;
   }
-  return commerce_order_load_multiple($order_ids);
+  return $order_ids;
 }
