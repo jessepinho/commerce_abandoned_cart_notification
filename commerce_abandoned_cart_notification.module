@@ -365,13 +365,40 @@ function commerce_abandoned_cart_notification_cron() {
 
 /**
  * Get all orders eligible for a given notification config.
+ *
+ * @param $config
+ *   The abandoned cart notification config entity for which orders should be
+ *   retrieved.
+ * @param $order_id
+ *   If wanting to check for whether a single order has already had this
+ *   notification sent, pass in that order's ID.
+ *
+ *   @see commerce_abandoned_cart_notification_send()
+ *
+ * @return
+ *   An array of order IDs.
  */
-function commerce_abandoned_cart_notification_config_orders($config) {
+function commerce_abandoned_cart_notification_config_orders($config, $order_id = NULL) {
   // If there are no statuses chosen for this configuration, return an empty
   // array (since by definition, there aren't any eligible orders).
   if (empty($config->data['statuses'])) {
     return array();
   }
+
+  $args = array(
+    ':empty' => '',
+    ':delay' => $config->delay,
+    ':statuses' => $config->data['statuses'],
+    ':product' => 'product',
+  );
+
+  // Prep the WHERE clause and the args if an order ID was passed in.
+  $where_order_id = '';
+  if (!is_null($order_id)) {
+    $where_order_id = 'AND co.order_id = :order_id';
+    $args[':order_id'] = $order_id;
+  }
+
   $query = db_query('
     SELECT
       co.order_id
@@ -409,14 +436,10 @@ function commerce_abandoned_cart_notification_config_orders($config) {
       AND co.status IN (:statuses)
       # Only return orders with product line items.
       AND cli.type = :product
+      ' . $where_order_id . '
     # Since one order can have multiple product line items, group by order ID.
     GROUP BY co.order_id
-  ', array(
-    ':empty' => '',
-    ':delay' => $config->delay,
-    ':statuses' => $config->data['statuses'],
-    ':product' => 'product'
-  ));
+  ', $args);
 
   // For efficiency, load all the orders at once, rather than one at a time.
   $order_ids = array();
